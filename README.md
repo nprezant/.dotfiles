@@ -1,4 +1,4 @@
-# Dotfiles
+# .dotfiles
 
 My main dotfiles for more easily replicating setups across machines.
 
