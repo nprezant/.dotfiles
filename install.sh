@@ -1,8 +1,8 @@
 # Symlink dotfiles from here to the places they need to be symlinked to
 
-cp -s .vimrc ~
-cp -s .zshrc ~
+ln -svf -t ~ .zshrc
+ln -svf -t ~ .vimrc
 
-cp -s i3 ~/i3
+#ln -svf -t ~/.config i3 
 
 
