@@ -32,8 +32,8 @@ nnoremap <leader><leader> <leader>
 " Save alias
 nnoremap <leader>w :w!<cr>
 
-" Save all alias
-nnoremap <leader>wa :bufdo :w!<cr>
+" Save all
+" :wa does this. only saves those that need saving
 
 " :W for sudo saving
 " helpful for permission denied errors
@@ -110,6 +110,7 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
+set belloff=all
 
 " Can increase this for left margin
 set foldcolumn=0

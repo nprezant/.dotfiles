@@ -41,20 +41,20 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+#bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec st
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-# bindsym $mod+d exec --no-startup-id dmenu_run
+#bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec rofi -modi drun -show drun
 # A more modern dmenu replacement is rofi:
-bindsym $mod+d exec rofi -modi drun -show drun -display-drun '⚡'
-
-# ,run -show drun
+# bindcode $mod+40 exec rofi -modi drun,run -show drun
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
-# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+#bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # change focus
 bindsym $mod+j focus left
@@ -90,8 +90,8 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+#bindsym $mod+s layout stacking
+#bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -148,9 +148,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exit
-#bindsym $mod+Shift+e exec sh -c '[ $echo "yes\nno"|dmenu -i -p "Do you really want to exit i3?") = "yes" ] && i3-msg exit'
-#bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -182,24 +180,48 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+    status_command i3status
+	font pango: 15px
 }
 
-# Set the background
-# Some good ones here:
-# /usr/share/backgrounds/archlinux/awesome.png
-exec --no-startup-id feh --bg-scale ~/photos/wallpapers/nord1.png
+# Polybar
+#exec_always --no-startup-id ~/.i3/polybar.sh
+#exec_always --no-startup-id ~/.config/polybar/launch.sh
 
-# Set the GAPS
+# Gaps!
+#gaps inner 10
+
+# Small window border
+for_window [class=".*"] border pixel 2
+
+# Activate smart gaps
 smart_gaps on
+
+# Activate smart borders (always)
 smart_borders on
 
-for_window [class=".*"] border pixel 2
-gaps inner 10
-gaps outer 5 
+# Set background
+exec feh --bg-scale ~/pictures/wallpapers/untitled-goose-desktop.png
 
-# Set lock screen shortcut
-bindsym $mod+Shift+Escape exec i3lock -i ~/photos/wallpapers/calvin-and-hobbes-lock.png
+# Flip the mouse scrolling mode to "natural"
+# xinput -- find touchpad id
+# xinput list-props <id>
+# xinput set-prop <id> <prop-id> <value>
+exec xinput set-prop 12 321 1
 
-# Zoom anywhere you want
+# screen locker
+bindsym $mod+Shift+Escape exec i3lock -i ~/pictures/wallpapers/calvin-and-hobbes.png
+
+# Backlight
+bindsym XF86MonBrightnessDown exec sudo xbacklight -dec 5
+bindsym XF86MonBrightnessUp exec sudo xbacklight -inc 5
+
+# ZoomX! Zoom in on your screen bro
 bindsym $mod+Shift+z exec zoomx
+
+# Enable geoclue agent on startup to let redshift work
+exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
+
+# Make android emulator floating
+for_window [title="Android Emulator"] floating enable, move container to workspace 3 
+for_window [title="Emulator"] floating enable, move container to workspace 3
