@@ -15,7 +15,7 @@ For simplistic usage, simply curl the raw files individually:
 curl <raw-.vimrc-path> > ~/.vimrc
 ```
 
-For more sophisticated usage, either run this [gist](https://gist.githubusercontent.com/nprezant/ac1d12ec0c9b1853023bc1ec50fd74bd/raw/) or follow the steps below.
+For more sophisticated usage, either run this [gist](https://gist.github.com/nprezant/ac1d12ec0c9b1853023bc1ec50fd74bd) or follow the steps below.
 
 ## Setup script
 
@@ -40,7 +40,7 @@ function dotfiles {
 }
 ```
 
-Attempt to check out files. Git won't overwrite existing files (e.g. you already have a .vimrc) so existing files are backed up to .dotfiles-backup.
+Attempt to check out files. Git won't overwrite existing files (e.g. you already have a .vimrc) so existing files are backed up to .dotfiles-backup. A specialized `mv` function is used to create parent directories on the fly when backing up files.
 
 ```console
 dotfiles checkout
@@ -48,8 +48,17 @@ if [[ $? == 0 ]]; then
     echo "Checked out dotfiles. No untracked files were overwritten.";
 else
     echo "Backup up pre-existing dotfiles to $HOME/.dotfiles-backup"
-    mkdir -p $HOME/.dotfiles-backup
-    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I _ mv _ $HOME/.dotfiles-backup/_
+    function mvp () {
+        # Moves a file and creates parent directories as necessary
+        dir="$2"
+        last_c="$2"; last_c="${last_c: -1}"
+        [[ "$last_c" != "/" ]] &&
+            dir="$(dirname "$2")"
+        [[ -e "$dir" ]] ||
+            mkdir -p "$dir" &&
+            mv "$@"
+    }
+    dotfiles checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I _ mvp _ $HOME/.dotfiles-backup/_
     dotfiles checkout
 fi;
 ```
