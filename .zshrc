@@ -38,12 +38,17 @@ alias i3config="vim ~/.config/i3/config"
 export EDITOR='vim'
 
 # Make history better (match up until cursor)
+# Note: zsh seems to use $terminfo to determine special key codes
+# 'Up'        "$terminfo[kcuu1]"
+# 'Left'      "$terminfo[kcub1]"
+# 'Down'      "$terminfo[kcud1]"
+# 'Right'     "$terminfo[kcuf1]"
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey "^[[A" up-line-or-beginning-search # Up
-bindkey "^[[B" down-line-or-beginning-search # Down
+bindkey "^[OA" up-line-or-beginning-search # Up
+bindkey "^[OB" down-line-or-beginning-search # Down
 
 # Activate the directory colors so GNU core utils respect them...
 test -r ~/.dir_colors && eval $(dircolors ~/.dir_colors)
