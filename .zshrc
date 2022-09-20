@@ -58,7 +58,7 @@ PROMPT+='%{$fg[cyan]%}[%~% ]' # current directory
 PROMPT+='%(?.%{$fg[green]%}.%{$fg[red]%})%B$%b ' # '$' either red or green depending on last command return value
 
 # Setup keychain to remember ssh keys
-eval `keychain --eval --quiet --agents ssh id_rsa`
+eval `keychain --eval --quiet --agents ssh id_np_github`
 
 # Alias for dotfiles management
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
