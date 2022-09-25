@@ -47,6 +47,8 @@ function package () {
     fi
 }
 
+echo "Checking packages..."
+
 (
 set_package fzf
 package https://github.com/junegunn/fzf.git &
@@ -69,7 +71,7 @@ wait
 
 wait
 
-echo "Generating help tags"
+echo "Generating help tags..."
 vim +":helptags ALL" +":qa"
 
 # Find any .git folder that was not just updated by this script call
@@ -78,11 +80,8 @@ vim +":helptags ALL" +":qa"
 old_plugs=$(find $pack/*/*/*/.git -prune -mmin +5 -print | sed "s/\/.git//")
 if [ -n "$old_plugs" ]; then
     echo "Removing old plugins: $old_plugs"
-    read -p "Are you sure? " -n 1 -r
-    echo    # (optional) move to a new line
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        echo $old_plugs | xargs rm -rf
-    fi
+    echo $old_plugs | xargs rm -rf
+else
+    echo "No plugins to remove."
 fi
 

@@ -41,6 +41,27 @@ command W w !sudo tee % > /dev/null
 
 " Helpful when testing .vimrc changes
 nnoremap <leader>r :source ~/.vimrc<cr>
+"
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugins
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Plugins are managed through the vim8 packages with a helper
+" script to download them. See :help packages
+func s:packinstall()
+    let l:installer = '$HOME/.vim/pack/install.sh'
+    let l:cmd = 'sh ' . l:installer
+    if exists(l:installer)
+       execute '!' . l:cmd
+    endif
+endfunction
+command! PackInstall call s:packinstall()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FZF
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" TODO
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 " UI
