@@ -126,6 +126,10 @@ syntax enable
 try
     color desert
 catch
+    try
+        color evening
+    catch
+    endtry
 endtry
 
 set background=dark
