@@ -41,6 +41,27 @@ command W w !sudo tee % > /dev/null
 
 " Helpful when testing .vimrc changes
 nnoremap <leader>r :source ~/.vimrc<cr>
+"
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugins
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Plugins are managed through the vim8 packages with a helper
+" script to download them. See :help packages
+func s:packinstall()
+    let l:installer = '$HOME/.vim/pack/install.sh'
+    let l:cmd = 'sh ' . l:installer
+    if exists(l:installer)
+       execute '!' . l:cmd
+    endif
+endfunction
+command! PackInstall call s:packinstall()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FZF
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" TODO
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 " UI
@@ -62,9 +83,9 @@ set wildignore=*.o,*.~,*.pyc
 
 " Ignore source control files
 if has("win16") || has("win32")
-	set wildignore+=.git\*,.hg\*,.svn\*
+    set wildignore+=.git\*,.hg\*,.svn\*
 else
-	set wildignore+=*/.git/*,*/.gh/*,*/.svn/*,*/.DS_STORE
+    set wildignore+=*/.git/*,*/.gh/*,*/.svn/*,*/.DS_STORE
 endif
 
 " Show current position
@@ -126,6 +147,10 @@ syntax enable
 try
     color desert
 catch
+    try
+        color evening
+    catch
+    endtry
 endtry
 
 set background=dark
@@ -216,11 +241,111 @@ endfunction
 " Movement!
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" An easier way to move between windows
-noremap <C-h> <C-W>h
-noremap <C-j> <C-W>j
-noremap <C-k> <C-W>k
-noremap <C-l> <C-W>l
+" A simple, vim-only, easier way to move between windows
+"noremap <C-h> <C-W>h
+"noremap <C-j> <C-W>j
+"noremap <C-k> <C-W>k
+"noremap <C-l> <C-W>l
+
+" A more complex, fancy way to use the same mappings to move between vim and tmux windows
+function! s:VimNavigate(direction)
+    try
+        execute 'wincmd ' . a:direction
+    catch
+        echohl ErrorMsg
+            \ | echo 'E11: Invalid in command-line window; <CR> executes, CTRL-C quits: wincmd k'
+            \ | echohl None
+    endtry
+endfunction
+
+nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <c-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <c-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <c-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <c-p> :TmuxNavigatePrevious<cr>
+nnoremap <silent> <c-\> :TmuxNavigatePrevious<cr>
+
+if empty($TMUX) " No tmux session available
+    command! TmuxNavigateLeft call s:VimNavigate('h')
+    command! TmuxNavigateDown call s:VimNavigate('j')
+    command! TmuxNavigateUp call s:VimNavigate('k')
+    command! TmuxNavigateRight call s:VimNavigate('l')
+    command! TmuxNavigatePrevious call s:VimNavigate('p')
+else " tmux session is available
+    command! TmuxNavigateLeft call s:TmuxAwareNavigate('h')
+    command! TmuxNavigateDown call s:TmuxAwareNavigate('j')
+    command! TmuxNavigateUp call s:TmuxAwareNavigate('k')
+    command! TmuxNavigateRight call s:TmuxAwareNavigate('l')
+    command! TmuxNavigatePrevious call s:TmuxAwareNavigate('p')
+endif
+
+let s:tmux_is_last_pane = 0
+augroup tmux_vim_navigation
+    " deletes old autocommands in this augroup
+    au!
+    " WinEnter is 'after entering another window', notably 'not done for
+    " first window'. That is, when we move from one vim window to another,
+    " it means that tmux is definitively not where we came from.
+    autocmd WinEnter * let s:tmux_is_last_pane = 0
+augroup END
+
+" Mapping vim directions with tmux pane edges. For use with "if-shell -F '#{pane_at_top}' 'true' 'false'"
+let s:pane_edge_from_direction = {'h': 'left', 'j': 'bottom', 'k': 'top', 'l': 'right'}
+
+function! s:TmuxAwareNavigate(direction)
+    let nr = winnr()
+    " Don't try the vim movement command if we just came from tmux
+    " and we're trying to go to the previous pane. Vim remembers the
+    " last vim window open and will go to that, but we want to go
+    " back to tmux if we just came from there.
+    let l:goto_previous_tmux = (a:direction == 'p' && s:tmux_is_last_pane)
+    if !l:goto_previous_tmux
+        call s:VimNavigate(a:direction)
+    endif
+    " Forward the switch panes command to tmux if:
+    " a) we're on an edge; we tried switching windows in vim to no avail
+    " b) we just came from tmux and we're headed back to the 'previous'
+    let l:on_vim_edge = nr == winnr()
+    if (l:on_vim_edge || l:goto_previous_tmux)
+        try
+            wall " save all the buffers. See :help wall
+        catch /^Vim\%((\a\+)\)\=:E141/ " catches the no file name error
+        endtry
+        let l:args =
+            \ 'select-pane -t '
+            \ . shellescape($TMUX_PANE)
+            \ . ' -' . tr(a:direction, 'phjkl', 'lLDUR')
+        " Preserve zoom
+        let l:args .= ' -Z'
+        " Don't do anything if trying to move up from the top pane (etc)
+        " However, allow movement when we are in zoom mode.
+        " Also always fine to go to the previous pane
+        if a:direction != 'p'
+            let args =
+                        \ 'if -F "#{&&:#{?window_zoomed_flag,0,1},#{pane_at_'
+                        \ . s:pane_edge_from_direction[a:direction]
+                        \ . '}}" "" "' . args . '"'
+        endif
+        silent call s:TmuxCommand(l:args)
+        let s:tmux_is_last_pane = 1 " just moved to tmux
+    else
+        let s:tmux_is_last_pane = 0 " just moved within vim
+    endif
+endfunction
+
+function! s:TmuxCommand(args)
+    let l:cmd = 'tmux' . ' -S ' . s:TmuxSocket() . ' ' . a:args
+    let l:x=&shellcmdflag " save (to restore) shellcmdflag state
+    let &shellcmdflag='-c' " non-interactive mode for a moment
+    let l:retval=system(l:cmd)
+    let &shellcmdflag=l:x
+    return l:retval
+endfunction
+
+function! s:TmuxSocket()
+    " The socket path is the first value in the comma-separated list of $TMUX.
+    return split($TMUX, ',')[0]
+endfunction
 
 " Vim will jump to the last place when reopening a file
 " This might be included in some vim installs

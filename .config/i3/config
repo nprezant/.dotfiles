@@ -207,7 +207,7 @@ exec feh --bg-scale ~/pictures/wallpapers/untitled-goose-desktop.png
 # xinput -- find touchpad id
 # xinput list-props <id>
 # xinput set-prop <id> <prop-id> <value>
-exec xinput set-prop 12 321 1
+exec xinput set-prop 10 315 1
 
 # screen locker
 bindsym $mod+Shift+Escape exec i3lock -i ~/pictures/wallpapers/calvin-and-hobbes.png
