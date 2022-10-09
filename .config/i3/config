@@ -181,7 +181,7 @@ smart_gaps on
 smart_borders on
 
 # Set background
-exec feh --bg-scale ~/photos/wallpapers/nord1.png
+exec --no-startup-id feh --bg-scale ~/photos/wallpapers/nord1.png
 
 # screen locker
 bindsym $mod+Shift+Escape exec i3lock -i ~/photos/wallpapers/calvin-and-hobbes-lock.png
