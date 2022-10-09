@@ -19,17 +19,6 @@ font pango:monospace 8
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
-# The combination of xss-lock, nm-applet and pactl is a popular choice, so
-# they are included here as an example. Modify as you see fit.
-
-# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
-# screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-
-# NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
-
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
@@ -41,8 +30,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # start a terminal
-#bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Return exec st
+bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -181,15 +169,7 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
     status_command i3status
-	font pango: 15px
 }
-
-# Polybar
-#exec_always --no-startup-id ~/.i3/polybar.sh
-#exec_always --no-startup-id ~/.config/polybar/launch.sh
-
-# Gaps!
-#gaps inner 10
 
 # Small window border
 for_window [class=".*"] border pixel 2
@@ -201,27 +181,10 @@ smart_gaps on
 smart_borders on
 
 # Set background
-exec feh --bg-scale ~/pictures/wallpapers/untitled-goose-desktop.png
-
-# Flip the mouse scrolling mode to "natural"
-# xinput -- find touchpad id
-# xinput list-props <id>
-# xinput set-prop <id> <prop-id> <value>
-exec xinput set-prop 10 315 1
+exec feh --bg-scale ~/photos/wallpapers/nord1.png
 
 # screen locker
-bindsym $mod+Shift+Escape exec i3lock -i ~/pictures/wallpapers/calvin-and-hobbes.png
-
-# Backlight
-bindsym XF86MonBrightnessDown exec sudo xbacklight -dec 5
-bindsym XF86MonBrightnessUp exec sudo xbacklight -inc 5
+bindsym $mod+Shift+Escape exec i3lock -i ~/photos/wallpapers/calvin-and-hobbes-lock.png
 
 # ZoomX! Zoom in on your screen bro
 bindsym $mod+Shift+z exec zoomx
-
-# Enable geoclue agent on startup to let redshift work
-exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
-
-# Make android emulator floating
-for_window [title="Android Emulator"] floating enable, move container to workspace 3 
-for_window [title="Emulator"] floating enable, move container to workspace 3
