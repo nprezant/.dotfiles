@@ -64,6 +64,22 @@ command! PackInstall call s:packinstall()
 " TODO
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""
+" C++ highlighting
+" This may slow things down
+" For use with https://github.com/bfrg/vim-cpp-modern
+""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Enable highlighting of C++11 attributes
+let g:cpp_attributes_highlight = 1
+
+" Highlight struct/class member variables (affects both C and C++ files)
+let g:cpp_member_highlight = 1
+
+" Put all standard C and C++ keywords under Vim's highlight group 'Statement'
+" (affects both C and C++ files)
+let g:cpp_simple_highlight = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UI
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -140,18 +156,20 @@ set foldcolumn=0
 " Colors
 """""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Required to enable true color support on st
+" https://wiki.archlinux.org/title/St#256color_and_truecolor_support_not_working_in_tmux_or_otherwise
+set t_8f=[38;2;%lu;%lu;%lum        " set foreground color
+set t_8b=[48;2;%lu;%lu;%lum        " set background color
+try
+    colorscheme gruvbox
+catch
+    colorscheme desert
+endtry
+set t_Co=256                         " Enable 256 colors
+set termguicolors                    " Enable GUI colors for the terminal to get truecolor
+
 " Syntax highlighting
 syntax enable
-
-" Got to pick a fun colorscheme
-try
-    color desert
-catch
-    try
-        color evening
-    catch
-    endtry
-endtry
 
 set background=dark
 

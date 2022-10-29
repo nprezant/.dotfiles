@@ -56,18 +56,18 @@ package https://github.com/junegunn/fzf.vim.git &
 wait
 ) &
 
-#(
-#set_package colorscheme opt
-#package https://github.com/challenger-deep-theme/vim.git &
-#wait
-#) &
-#
-#(
-#set_package syntax
-#package https://github.com/keith/swift.vim.git &
-#package https://github.com/mracos/mermaid.vim.git &
-#wait
-#) &
+(
+set_package colors opt
+package https://github.com/morhetz/gruvbox.git &
+wait
+) &
+
+(
+set_package syntax
+package https://github.com/keith/swift.vim.git &
+package https://github.com/bfrg/vim-cpp-modern.git &
+wait
+) &
 
 wait
 
