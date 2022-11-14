@@ -66,6 +66,7 @@ wait
 set_package syntax
 package https://github.com/keith/swift.vim.git &
 package https://github.com/bfrg/vim-cpp-modern.git &
+package https://github.com/sheerun/vim-polyglot.git &
 wait
 ) &
 
