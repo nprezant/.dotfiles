@@ -61,5 +61,5 @@ PROMPT+='%(?.%{$fg[green]%}.%{$fg[red]%})%B$%b ' # '$' either red or green depen
 eval `keychain --eval --quiet --agents ssh id_rsa`
 
 # Alias for dotfiles management
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dotfiles='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
