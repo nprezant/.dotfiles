@@ -53,6 +53,7 @@ echo "Checking packages..."
 set_package fzf
 package https://github.com/junegunn/fzf.git &
 package https://github.com/junegunn/fzf.vim.git &
+package https://github.com/luukvbaal/nnn.nvim.git &
 wait
 ) &
 
@@ -67,6 +68,12 @@ set_package syntax
 package https://github.com/keith/swift.vim.git &
 package https://github.com/bfrg/vim-cpp-modern.git &
 package https://github.com/sheerun/vim-polyglot.git &
+wait
+) &
+
+(
+set_package completion
+#package https://github.com/neoclide/coc.nvim.git &
 wait
 ) &
 

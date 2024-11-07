@@ -42,7 +42,7 @@ floating_modifier $mod
 
 # start a terminal
 #bindsym $mod+Return exec i3-sensible-terminal
-bindsym $mod+Return exec st
+bindsym $mod+Return exec kitty 
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -179,14 +179,13 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-    status_command i3status
-	font pango: 15px
-}
+#bar {
+#    status_command i3status
+#	font pango: 15px
+#}
 
 # Polybar
-#exec_always --no-startup-id ~/.i3/polybar.sh
-#exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 # Gaps!
 #gaps inner 10
@@ -204,10 +203,14 @@ smart_borders on
 exec feh --bg-scale ~/pictures/wallpapers/untitled-goose-desktop.png
 
 # Flip the mouse scrolling mode to "natural"
-# xinput -- find touchpad id
+# xinput # find touchpad id
 # xinput list-props <id>
 # xinput set-prop <id> <prop-id> <value>
-exec xinput set-prop 10 315 1
+# Natural input
+exec xinput set-prop "Synaptics TM3072-003" "libinput Natural Scrolling Enabled" 1
+# Don't disable while typing
+exec xinput set-prop "Synaptics TM3072-003" "libinput Disable While Typing Enabled" 0
+exec xinput set-prop "Synaptics TM3072-003" "libinput Scrolling Pixel Distance" 10
 
 # screen locker
 bindsym $mod+Shift+Escape exec i3lock -i ~/pictures/wallpapers/calvin-and-hobbes.png
@@ -218,6 +221,7 @@ bindsym XF86MonBrightnessUp exec sudo xbacklight -inc 5
 
 # ZoomX! Zoom in on your screen bro
 bindsym $mod+Shift+z exec zoomx
+bindsym $mod+Shift+s exec import ~/pictures/screenshot.png
 
 # Enable geoclue agent on startup to let redshift work
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
@@ -225,3 +229,6 @@ exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
 # Make android emulator floating
 for_window [title="Android Emulator"] floating enable, move container to workspace 3 
 for_window [title="Emulator"] floating enable, move container to workspace 3
+
+# Renaming workspaces
+bindsym $mod+n exec i3-input -F 'rename workspace to "%s"' -P 'New name: '

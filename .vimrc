@@ -41,6 +41,10 @@ command W w !sudo tee % > /dev/null
 
 " Helpful when testing .vimrc changes
 nnoremap <leader>r :source ~/.vimrc<cr>
+
+" Numbering
+set number
+
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins
